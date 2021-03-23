@@ -1,0 +1,153 @@
+<html>
+<head>
+	<script type="text/javascript" src="jquery-min.js"></script>
+	<script src="jquery-ui\jquery-ui.js"></script>
+		
+	<link href="jquery-ui\jquery-ui.css" rel="stylesheet">
+	<style>
+	body{
+		font-family:sans-serif;
+		padding:0;
+		margin:0;
+		}
+	#header{
+		width:100%; 
+		background-color:#EEEEEE;
+		padding:5px;
+		height:30px;
+		}
+	#buttonContainer{
+			width:300px;
+			margin:0 auto;
+	}
+	#logo{
+		float:left;
+		font-weight:bold;
+		font-size:120%;
+		padding:3px 5px;
+	}	
+	.toggleButton{
+		float:left;
+		border:1px solid grey;
+		padding:6px;
+		border-right:none;
+		font-size:90%;
+	}
+	#html{
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+	#output{
+		border-top-right-radius: 4px;
+		border-bottom-radius: 4px;
+		border-right:1px solid grey;
+	}
+	.active{
+		background-color: #E8F2FF;
+	}
+	.highlightedButton{
+			background-color:grey;
+	}
+	textarea{
+		resize:none;
+		border-top:none;
+		border-color:grey;
+		border-left:none;
+		border-bottom:none;
+	}
+	.panel{
+		float:left;
+		width:50%;
+		border-left:none;
+	}
+	iframe{
+		border:none;
+	}
+	.hidden{
+		display:none;
+	}
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id ="logo">
+			CodePlayer
+		</div>
+	<div id="buttonContainer">
+		<div class ="toggleButton active" id="html">HTML</div>
+		<div class ="toggleButton" id="css">CSS</div>
+		<div class ="toggleButton" id="javascript">JavaScript</div>
+		<div class ="toggleButton" id="output">Output</div>
+	</div>
+	</div>
+	
+	<div id="bodyContainer">
+		<textarea id="htmlPanel" class="panel"><p id="paragraph">Hello World!</p></textarea>
+		<textarea id="cssPanel" class="panel hidden">p {color:green;}</textarea>
+		<textarea id="javascriptPanel" class="panel hidden">document.getElementById("paragraph").innerHTML="Hello!";</textarea>
+		<iframe id ="outputPanel" class="panel hidden"></iframe>
+	</div>
+	
+	<script>
+		function updateOutput(){
+			$("iframe").contents().find("html").html("<style>"+$("#cssPanel").val()
+			+"</style>"+$("#htmlPanel").val());
+			
+			document.getElementById("outputPanel").contentWindow.eval($("#javascriptPanel").val());
+		}
+	
+		function someFunction(){
+			console.log(document.body.children);
+		}
+		someFunction();
+		ifrm = document.getElementsByTagName('iframe')[0],
+		iwind = ifrm.contentWindow;
+		
+		iwind.eval(someFunction.toString());
+		iwind.someFunction();
+		
+		
+		$("li").hover(
+		function(){
+			$(this).append($("<span> ***</span>"));
+			},function(){
+			$(this).find("span:last").remove();
+			}
+		);
+		
+		$(".toggleButton").hover(function(){
+			$(this).addClass("highlightedButton");
+		},function(){
+			$(this).removeClass("highlightedButton");
+		});
+		
+		$(".toggleButton").click(function(){
+			$(this).toggleClass("active");
+			
+			$(this).removeClass("highlightedButton");
+			
+			var panelId=$(this).attr("id")+"Panel";
+			
+			$("#"+panelId).toggleClass("hidden");
+			
+
+			var numberOfActivePanels=4-$('.hidden').length;
+			$(".panel").width(($(window).width()/numberOfActivePanels)-10);
+		})
+		
+		
+		$(".panel").height($(window).height()-$("#header").height()-15);	
+		$(".panel").width(($(window).width()/2)-10);
+		
+		$("iframe").contents().find("html").html($("#htmlPanel").val());
+		
+		updateOutput();
+		
+		$("textarea").on('change keyup paste',function(){
+			$("iframe").contents().find("html").html($("#htmlPanel").val());
+			updateOutput();
+		})
+	</script>
+
+</body>
+</html>
